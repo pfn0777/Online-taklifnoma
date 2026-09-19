@@ -132,10 +132,59 @@
           <em class="hint">Ixtiyoriy. Bo'sh qolsa tugma ko'rinmaydi.</em>
         </label>
       </section>
+
+      <section class="panel">
+        <h2>Rus tilidagi matnlar (RU)</h2>
+        <p class="hint">Har bir maydon bo'sh qolsa — o'sha joyda o'zbekcha matn ko'rinadi.
+          Interfeys (sarlavha, tugma, oy nomlari) avtomatik tarjima qilinadi.</p>
+        <div class="field-row">
+          <label class="field"><span>Kuyov ismi (RU)</span><input id="f-ru-groom"></label>
+          <label class="field"><span>Kelin ismi (RU)</span><input id="f-ru-bride"></label>
+        </div>
+        <label class="field"><span>Oila nomi (RU)</span><input id="f-ru-family"></label>
+        <label class="field"><span>Tadbir turi (RU)</span><input id="f-ru-eventType"></label>
+        <div class="field-row">
+          <label class="field"><span>Konvert salomlashuvi (RU)</span><input id="f-ru-greeting"></label>
+          <label class="field"><span>Konvert yorlig'i (RU)</span><input id="f-ru-inviteTitle"></label>
+        </div>
+        <label class="field"><span>Taklif matni (RU)</span><textarea id="f-ru-introText"></textarea></label>
+        <label class="field"><span>Hikoya matni (RU)</span><textarea id="f-ru-storyText"></textarea></label>
+        <label class="field"><span>Yakuniy matn (RU)</span><input id="f-ru-closingText"></label>
+        <div class="field-row">
+          <label class="field"><span>Hafta kuni (RU)</span><input id="f-ru-weekday"></label>
+          <label class="field"><span>Oy yorlig'i (RU)</span><input id="f-ru-monthLabel"></label>
+        </div>
+        <label class="field"><span>To'liq sana qatori (RU)</span><input id="f-ru-dateLine"></label>
+        <label class="field"><span>To'yxona nomi (RU)</span><input id="f-ru-venueName"></label>
+        <label class="field"><span>Manzil (RU)</span><input id="f-ru-venueAddress"></label>
+        <label class="field"><span>To'yona sarlavhasi (RU)</span><input id="f-ru-giftTitle"></label>
+        <label class="field"><span>To'yona matni (RU)</span><textarea id="f-ru-giftText"></textarea></label>
+        <div class="field-row">
+          <label class="field"><span>Karta egasi (RU)</span><input id="f-ru-cardHolder"></label>
+          <label class="field"><span>Bank / tizim (RU)</span><input id="f-ru-cardBank"></label>
+        </div>
+      </section>
     </div>
 
     <!-- ---- O'ng ustun ---- -->
     <div class="column">
+      <section class="panel">
+        <h2>Mehmonga yuboriladigan havola</h2>
+        <p class="hint">Til havolada bo'ladi — mehmon qaysi qurilmada ochsa ham o'sha tilda ko'radi.</p>
+        <label class="field">
+          <span>Default til</span>
+          <select id="f-lang">
+            <option value="uz">O'zbekcha</option>
+            <option value="ru">Ruscha</option>
+          </select>
+          <em class="hint">Havolada ?lang= bo'lmaganda ishlatiladi.</em>
+        </label>
+        <div class="field-row">
+          <button type="button" class="link-btn" id="copyUzLink">O'zbekcha havolani nusxalash</button>
+          <button type="button" class="link-btn" id="copyRuLink">Ruscha havolani nusxalash</button>
+        </div>
+      </section>
+
       <section class="panel">
         <h2>Galereya</h2>
         <div class="list-editor" id="galleryEditor"></div>
@@ -154,7 +203,14 @@
       <section class="panel">
         <h2>Jonli ko'rinish</h2>
         <p class="hint">Saqlaganingizdan so'ng yangilanadi.</p>
-        <div class="preview-frame"><iframe id="preview" src="index.html" title="Taklifnoma ko'rinishi"></iframe></div>
+        <label class="field">
+          <span>Ko'rinish tili</span>
+          <select id="previewLang">
+            <option value="uz">O'zbekcha</option>
+            <option value="ru">Ruscha</option>
+          </select>
+        </label>
+        <div class="preview-frame"><iframe id="preview" src="index.html?lang=uz" title="Taklifnoma ko'rinishi"></iframe></div>
       </section>
     </div>
   </div>
@@ -162,6 +218,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="i18n.js"></script>
 <script src="config.js"></script>
 <script src="store.js"></script>
 <script src="admin.js"></script>

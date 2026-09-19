@@ -293,14 +293,14 @@
       <svg class="orn" aria-hidden="true"><use href="#i-bloom"></use></svg>
     </div>
   </div>
-  <button class="btn btn-open" id="openInvite">Taklifnomani ochish</button>
+  <button class="btn btn-open" id="openInvite" data-t="openBtn">Taklifnomani ochish</button>
 </section>
 
 <!-- Gullar qatlami (JS to'ldiradi; reduced-motion'da bo'sh qoladi) -->
 <div id="petals" aria-hidden="true"></div>
 
 <!-- Musiqa tugmasi (default o'chiq) -->
-<button class="music-toggle" id="musicToggle" aria-pressed="false" aria-label="Musiqani yoqish">
+<button class="music-toggle" id="musicToggle" aria-pressed="false" aria-label="Musiqani yoqish" data-t-aria="musicOff">
   <span class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
 </button>
 
@@ -316,26 +316,26 @@
       <span class="amp">&amp;</span>
       <span data-f="bride">Xadicha</span>
     </p>
-    <p class="meta-label">Vaqt</p>
+    <p class="meta-label" data-t="timeLabel">Vaqt</p>
     <p class="meta-value" data-f="dateLine">CHORSHANBA • 16 Dekabr 2026 • 18:00</p>
     <svg class="orn orn-sprig" aria-hidden="true"><use href="#i-sprig"></use></svg>
     <p class="lede" data-f="introText">Sizni hayotimizdagi eng baxtli kun — to'yimizga taklif qilamiz</p>
-    <p class="meta-label">Hurmat bilan</p>
+    <p class="meta-label" data-t="regardsLabel">Hurmat bilan</p>
     <p class="family" data-f="family">Abdurahmonovlar oilasi</p>
   </section>
 
   <!-- Bizning hikoyamiz -->
   <section class="sheet story reveal">
-    <p class="eyebrow">Bizning hikoyamiz</p>
-    <h2 class="title">Bizning hikoyamiz</h2>
+    <p class="eyebrow" data-t="storyEyebrow">Bizning hikoyamiz</p>
+    <h2 class="title" data-t="storyTitle">Bizning hikoyamiz</h2>
     <p class="lede" data-f="storyText">Ikki yurak, bitta yo'l.</p>
     <div class="gallery" id="gallery"></div>
   </section>
 
   <!-- Sana + countdown -->
   <section class="sheet savedate band reveal">
-    <p class="eyebrow">Muhim sana</p>
-    <h2 class="title">Sanamizni eslab qoling</h2>
+    <p class="eyebrow" data-t="dateEyebrow">Muhim sana</p>
+    <h2 class="title" data-t="dateTitle">Sanamizni eslab qoling</h2>
 
     <div class="bigdate">
       <p class="wd" data-f="weekday">CHORSHANBA</p>
@@ -345,21 +345,21 @@
     </div>
 
     <div class="calendar" id="calendar"></div>
-    <a class="btn ghost" id="addCal" href="#" target="_blank" rel="noopener">Kalendariga qo'shish</a>
+    <a class="btn ghost" id="addCal" href="#" target="_blank" rel="noopener" data-t="addCalendar">Kalendariga qo'shish</a>
 
-    <p class="meta-label cd-caption">Eng baxtli kungacha</p>
+    <p class="meta-label cd-caption" data-t="countdownCaption">Eng baxtli kungacha</p>
     <div class="countdown" id="countdown">
-      <div class="cd-item"><span class="cd-num" id="cd-d">—</span><span class="cd-label">Kun</span></div>
-      <div class="cd-item"><span class="cd-num" id="cd-h">—</span><span class="cd-label">Soat</span></div>
-      <div class="cd-item"><span class="cd-num" id="cd-m">—</span><span class="cd-label">Daqiqa</span></div>
-      <div class="cd-item"><span class="cd-num" id="cd-s">—</span><span class="cd-label">Soniya</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-d">—</span><span class="cd-label" data-t="cdDays">Kun</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-h">—</span><span class="cd-label" data-t="cdHours">Soat</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-m">—</span><span class="cd-label" data-t="cdMinutes">Daqiqa</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-s">—</span><span class="cd-label" data-t="cdSeconds">Soniya</span></div>
     </div>
   </section>
 
   <!-- Manzil -->
   <section class="sheet venue reveal">
-    <p class="eyebrow">Qayerda</p>
-    <h2 class="title">To'y manzili</h2>
+    <p class="eyebrow" data-t="venueEyebrow">Qayerda</p>
+    <h2 class="title" data-t="venueTitle">To'y manzili</h2>
 
     <figure class="venue-photo">
       <img id="venuePhoto" src="" alt="" loading="lazy">
@@ -367,37 +367,37 @@
     <h3 class="venue-name" data-f="venueName">Navro'z To'yxonasi</h3>
     <p class="venue-addr" data-f="venueAddress">Toshkent viloyati, Chirchiq shahri</p>
     <a class="btn ghost with-icon" id="mapLink" href="#" target="_blank" rel="noopener">
-      <svg class="orn" aria-hidden="true"><use href="#i-pin"></use></svg>Xaritada ko'rish
+      <svg class="orn" aria-hidden="true"><use href="#i-pin"></use></svg><span data-t="mapLink">Xaritada ko'rish</span>
     </a>
     <div class="map-frame">
-      <iframe id="mapFrame" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="To'y manzili xaritada"></iframe>
+      <iframe id="mapFrame" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="To'y manzili xaritada" data-t-title="mapTitle"></iframe>
     </div>
   </section>
 
   <!-- Dastur -->
   <section class="sheet schedule reveal">
-    <p class="eyebrow">Kun tartibi</p>
-    <h2 class="title">To'y dasturi</h2>
+    <p class="eyebrow" data-t="scheduleEyebrow">Kun tartibi</p>
+    <h2 class="title" data-t="scheduleTitle">To'y dasturi</h2>
     <ul class="timeline" id="timeline"></ul>
   </section>
 
   <!-- Tilaklar -->
   <section class="sheet wishes reveal">
-    <p class="eyebrow">Xotira kitobi</p>
-    <h2 class="title">Mehmonlar tilaklari</h2>
+    <p class="eyebrow" data-t="wishesEyebrow">Xotira kitobi</p>
+    <h2 class="title" data-t="wishesTitle">Mehmonlar tilaklari</h2>
 
     <form class="form wishes-form" id="wishForm" novalidate>
       <label class="fld">
-        <span class="fld-label">Ismingiz</span>
-        <input type="text" id="wishName" required maxlength="40" autocomplete="name" placeholder="Ism">
+        <span class="fld-label" data-t="wishNameLabel">Ismingiz</span>
+        <input type="text" id="wishName" required maxlength="40" autocomplete="name" placeholder="Ism" data-t-ph="wishNamePh">
       </label>
       <label class="fld">
-        <span class="fld-label">Tilagingiz</span>
-        <textarea id="wishText" rows="3" required maxlength="300" placeholder="Kelin-kuyovga tilagingiz..."></textarea>
+        <span class="fld-label" data-t="wishTextLabel">Tilagingiz</span>
+        <textarea id="wishText" rows="3" required maxlength="300" placeholder="Kelin-kuyovga tilagingiz..." data-t-ph="wishTextPh"></textarea>
       </label>
       <div class="form-row">
-        <button type="submit" class="btn">Tilak yuborish</button>
-        <button type="button" class="btn ghost" id="magicBtn">Tayyor tilak</button>
+        <button type="submit" class="btn" data-t="wishSubmit">Tilak yuborish</button>
+        <button type="button" class="btn ghost" id="magicBtn" data-t="wishMagic">Tayyor tilak</button>
       </div>
       <p class="form-msg" id="wishMsg" role="status" aria-live="polite"></p>
     </form>
@@ -407,7 +407,7 @@
 
   <!-- To'yona -->
   <section class="sheet gift reveal">
-    <p class="eyebrow">E'tibor uchun</p>
+    <p class="eyebrow" data-t="giftEyebrow">E'tibor uchun</p>
     <h2 class="title" data-f="giftTitle">Sovg'a yuborish</h2>
     <p class="lede" data-f="giftText"></p>
 
@@ -415,7 +415,7 @@
       <button type="button" class="gift-box" id="giftBoxBtn"
               aria-expanded="false" aria-controls="giftReveal">
         <img class="gb-art" src="assets/giftbox.webp" alt="" aria-hidden="true" loading="lazy" width="900" height="827">
-        <span class="gb-hint">Ochish uchun bosing</span>
+        <span class="gb-hint" data-t="giftBoxHint">Ochish uchun bosing</span>
       </button>
 
       <div class="gift-burst" id="giftBurst" aria-hidden="true"></div>
@@ -428,19 +428,19 @@
         <p class="gc-number" id="cardNumber">8600 1234 5678 9012</p>
         <p class="gc-holder" data-f="cardHolder">MUHAMMAD ABDURAHMONOV</p>
         <button type="button" class="btn ghost with-icon" id="copyCard">
-          <svg class="orn" aria-hidden="true"><use href="#i-copy"></use></svg>Raqamdan nusxa olish
+          <svg class="orn" aria-hidden="true"><use href="#i-copy"></use></svg><span data-t="copyCard">Raqamdan nusxa olish</span>
         </button>
         <p class="form-msg" id="copyMsg" role="status" aria-live="polite"></p>
-        <a class="btn ghost" id="payLink" href="#" target="_blank" rel="noopener" hidden>To'lov havolasi</a>
+        <a class="btn ghost" id="payLink" href="#" target="_blank" rel="noopener" hidden data-t="payLink">To'lov havolasi</a>
       </div>
     </div>
   </section>
 
   <!-- Kontakt -->
   <section class="sheet contact band reveal">
-    <p class="eyebrow">Bog'lanish uchun</p>
-    <h2 class="title">Bog'lanish uchun</h2>
-    <p class="lede">Savollaringiz bo'lsa, bemalol murojaat qiling.</p>
+    <p class="eyebrow" data-t="contactEyebrow">Bog'lanish uchun</p>
+    <h2 class="title" data-t="contactTitle">Bog'lanish uchun</h2>
+    <p class="lede" data-t="contactLede">Savollaringiz bo'lsa, bemalol murojaat qiling.</p>
     <div class="contact-cards" id="contactCards"></div>
   </section>
 </main>
@@ -455,8 +455,8 @@
 </footer>
 
 <!-- Lightbox -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Surat">
-  <button class="lb-close" id="lbClose" aria-label="Yopish">&times;</button>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Surat" data-t-aria="lightboxLabel">
+  <button class="lb-close" id="lbClose" aria-label="Yopish" data-t-aria="lightboxClose">&times;</button>
   <img id="lbImg" src="" alt="">
 </div>
 
@@ -473,6 +473,7 @@
   </style>
 </noscript>
 
+<script src="i18n.js"></script>
 <script src="config.js"></script>
 <script src="store.js"></script>
 <script src="app.js"></script>

@@ -40,9 +40,24 @@ function getTheme(id) {
   return THEMES.find(t => t.id === id) || THEMES[0];
 }
 
+/* Ikki tilda to'ldiriladigan maydonlar.
+   UZ qiymat — DEFAULT_DATA ildizida, RU qiymat — DEFAULT_DATA.ru ichida.
+   Yangi matn maydoni qo'shsangiz va u tarjima talab qilsa — shu ro'yxatga qo'shing,
+   admin.html ga id="f-ru-<kalit>" maydonini qo'shing (verify.js tekshiradi). */
+const TRANSLATABLE = [
+  'groom', 'bride', 'family', 'eventType', 'greeting', 'inviteTitle',
+  'introText', 'storyText', 'closingText',
+  'weekday', 'monthLabel', 'dateLine',
+  'venueName', 'venueAddress',
+  'giftTitle', 'giftText', 'cardHolder', 'cardBank'
+];
+
 const DEFAULT_DATA = {
   // ---- Tema ----
   theme: DEFAULT_THEME,
+
+  // ---- Default til (havolada ?lang=... bo'lmaganda) ----
+  lang: DEFAULT_LANG,
 
   // ---- Juftlik ----
   groom: 'Muhammad',
@@ -95,11 +110,11 @@ const DEFAULT_DATA = {
 
   // ---- To'y dasturi (icon: SVG sprite kaliti) ----
   schedule: [
-    { time: '18:00', label: 'Mehmonlarni kutib olish', icon: 'guests' },
-    { time: '18:30', label: 'Nikoh marosimi',          icon: 'rings' },
-    { time: '18:45', label: 'Foto sessiya',            icon: 'camera' },
-    { time: '19:00', label: 'Bazm va tantana',         icon: 'music' },
-    { time: '21:00', label: 'Tort va xayrlashuv',      icon: 'cake' }
+    { time: '18:00', label: 'Mehmonlarni kutib olish', labelRu: 'Встреча гостей',        icon: 'guests' },
+    { time: '18:30', label: 'Nikoh marosimi',          labelRu: 'Церемония бракосочетания', icon: 'rings' },
+    { time: '18:45', label: 'Foto sessiya',            labelRu: 'Фотосессия',            icon: 'camera' },
+    { time: '19:00', label: 'Bazm va tantana',         labelRu: 'Банкет и торжество',    icon: 'music' },
+    { time: '21:00', label: 'Tort va xayrlashuv',      labelRu: 'Торт и прощание',       icon: 'cake' }
   ],
 
   // ---- To'yona (sovg'a) ----
@@ -109,6 +124,28 @@ const DEFAULT_DATA = {
   cardHolder: 'MUHAMMAD ABDURAHMONOV',
   cardBank: 'Uzcard',
   paymentLink: '',                    // ixtiyoriy Payme / Click havolasi
+
+  // ---- Rus tilidagi variantlar (bo'sh qolsa o'zbekcha matn ishlatiladi) ----
+  ru: {
+    groom: 'Мухаммад',
+    bride: 'Хадича',
+    family: 'Семья Абдурахмановых',
+    eventType: 'СВАДЕБНОЕ ТОРЖЕСТВО',
+    greeting: 'Здравствуйте, дорогой гость',
+    inviteTitle: 'Приглашение',
+    introText: 'Приглашаем вас на самый счастливый день нашей жизни — нашу свадьбу',
+    storyText: 'Два сердца, один путь — так началась наша история.',
+    closingText: 'Начало долгой и счастливой жизни',
+    weekday: 'СРЕДА',
+    monthLabel: 'ДЕКАБРЬ 2026',
+    dateLine: 'СРЕДА • 16 декабря 2026 • 18:00',
+    venueName: 'Ресторан «Навруз»',
+    venueAddress: 'Ташкентская область, город Чирчик',
+    giftTitle: 'Подарок молодожёнам',
+    giftText: 'Ваши добрые пожелания — самый большой подарок для нас. Но если вы хотите преподнести что-то от души, воспользуйтесь коробочкой ниже.',
+    cardHolder: 'MUHAMMAD ABDURAHMONOV',
+    cardBank: 'Uzcard'
+  },
 
   // ---- Mehmon tilaklari ----
   wishes: [
@@ -120,13 +157,20 @@ const DEFAULT_DATA = {
 
 const EVENT_DURATION_MS = 3 * 60 * 60 * 1000;   // to'y ~3 soat
 
+/* Maydonning tanlangan tildagi qiymati. RU bo'sh bo'lsa — UZ qaytadi. */
+function fieldValue(data, key, lang) {
+  if (lang === 'ru' && data.ru && data.ru[key]) return data.ru[key];
+  return data[key];
+}
+
 /* ---- Xarita havolalari ---- */
-function mapEmbedUrl(query, provider) {
+function mapEmbedUrl(query, provider, lang) {
   const q = encodeURIComponent(query);
   if (provider === 'google') {
     return 'https://maps.google.com/maps?q=' + q + '&z=15&output=embed';
   }
-  return 'https://yandex.uz/map-widget/v1/?text=' + q + '&z=15&lang=uz_UZ';
+  const locale = I18N_MAP_LOCALE[lang] || I18N_MAP_LOCALE[DEFAULT_LANG];
+  return 'https://yandex.uz/map-widget/v1/?text=' + q + '&z=15&lang=' + locale;
 }
 
 function mapLinkUrl(query, provider) {
@@ -137,14 +181,15 @@ function mapLinkUrl(query, provider) {
   return 'https://yandex.uz/maps/?text=' + q;
 }
 
-function buildCalendarLink(data) {
+function buildCalendarLink(data, lang) {
   const start = new Date(data.dateISO);
   const end = new Date(start.getTime() + EVENT_DURATION_MS);
   const fmt = (dt) => dt.toISOString().replace(/[-:]|\.\d{3}/g, '');
+  const v = (key) => fieldValue(data, key, lang);
   return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-    + '&text=' + encodeURIComponent(data.groom + ' & ' + data.bride + ' — ' + data.eventType)
+    + '&text=' + encodeURIComponent(v('groom') + ' & ' + v('bride') + ' — ' + v('eventType'))
     + '&dates=' + fmt(start) + '/' + fmt(end)
-    + '&location=' + encodeURIComponent(data.venueName + ', ' + data.venueAddress)
-    + '&details=' + encodeURIComponent(data.introText);
+    + '&location=' + encodeURIComponent(v('venueName') + ', ' + v('venueAddress'))
+    + '&details=' + encodeURIComponent(v('introText'));
 }
 

@@ -20,11 +20,12 @@
   --paper-2:   #F3EDE4;   /* ajratilgan bo'lim */
   --card:      #FFFFFF;
   --ink:       #2A2A24;   /* paper'da 14.6:1 */
-  --ink-2:     #6B6458;   /* paper'da 5.5:1 — AA */
+  --ink-2:     #4A4437;   /* paper'da 9.2:1 — AAA (mayda uppercase yorliqlar uchun) */
   --primary:   #404A1D;   /* paper'da 8.9:1 — AAA */
   --primary-2: #5A6628;
   --accent:    #A69689;   /* FAQAT chiziq/ornament — matn uchun yaroqsiz (2.4:1) */
   --line:      #E0D8CC;
+  --primary-glow: rgba(64, 74, 29, 0.45);   /* konvert tugmasi pulsatsiyasi */
 
   --display: "Great Vibes", cursive;
   --serif:   "Cormorant Garamond", Georgia, serif;
@@ -48,11 +49,12 @@
   --paper-2:   #F4F5EF;
   --card:      #FFFFFF;
   --ink:       #2D321B;   /* paper'da 12.9:1 */
-  --ink-2:     #666947;   /* paper'da 5.6:1 — AA */
+  --ink-2:     #4C4F33;   /* paper'da 8.4:1 — AAA (mayda uppercase yorliqlar uchun) */
   --primary:   #2D321B;
   --primary-2: #666947;
   --accent:    #A69689;
   --line:      #E5E0D8;
+  --primary-glow: rgba(45, 50, 27, 0.45);   /* konvert tugmasi pulsatsiyasi */
 
   --display: "Marcellus", Georgia, serif;
   --serif:   "Cormorant Garamond", Georgia, serif;

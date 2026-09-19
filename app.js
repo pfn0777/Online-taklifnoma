@@ -9,9 +9,10 @@ let data = Store.load();
 const $ = (id) => document.getElementById(id);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const UZ_DOW = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
-const UZ_MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
-                   'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+// Til: havoladagi ?lang=ru ustun, bo'lmasa admin tanlagan default (i18n.js)
+const LANG = detectLang(data.lang);
+const tr = (key) => t(key, LANG);
+const fv = (key) => fieldValue(data, key, LANG);
 
 const PETAL_COUNT_MOBILE = 5;
 const PETAL_COUNT_DESKTOP = 9;
@@ -23,14 +24,6 @@ const REVEAL_FALLBACK_MS = 400;   // IO ishlamasa ko’rinadigan qismni ochish
 const GIFT_OPEN_MS = 800;         // quti qopqog'i ko'tarilishi (style.css --t-slow)
 const GIFT_BURST_MS = 1100;       // gulbarg portlashi
 const GIFT_BURST_COUNT = 8;
-
-const MAGIC_WISHES = [
-  "Baxtingiz abadiy, oilangiz doimo mehr va quvonchga to'la bo'lsin!",
-  "Nikoh to'yingiz muborak! Bir umr ahil va baxtli yashanglar.",
-  "Yangi hayotingiz sevgi, hurmat va unutilmas lahzalarga boy bo'lsin!",
-  "Ikki qalb, bir orzu — to'ylaringiz muborak bo'lsin!",
-  "Alloh oilangizga tinchlik, baraka va cheksiz baxt ato etsin!"
-];
 
 /* ---------- SVG ikonka yasash ---------- */
 function icon(name, className) {
@@ -119,22 +112,23 @@ function renderCornerOrnaments(theme) {
 function fillText() {
   document.querySelectorAll('[data-f]').forEach(node => {
     const key = node.getAttribute('data-f');
-    if (data[key] !== undefined) node.textContent = data[key];
+    const value = fv(key);
+    if (value !== undefined) node.textContent = value;
   });
 
-  const fullTitle = 'Taklifnoma — ' + data.groom + ' & ' + data.bride;
-  document.title = fullTitle;
+  const couple = fv('groom') + ' & ' + fv('bride');
+  document.title = tr('docTitle') + ' — ' + couple;
 
   // Ijtimoiy tarmoq preview
-  $('ogTitle').setAttribute('content', data.groom + ' & ' + data.bride + ' — Taklifnoma');
-  $('ogDesc').setAttribute('content', data.introText);
+  $('ogTitle').setAttribute('content', couple + ' — ' + tr('ogSuffix'));
+  $('ogDesc').setAttribute('content', fv('introText'));
   $('ogImage').setAttribute('content', data.ogImage || data.venuePhoto || '');
 
   // To'yxona surati
   const photo = $('venuePhoto');
   if (data.venuePhoto) {
     photo.src = data.venuePhoto;
-    photo.alt = data.venueName;
+    photo.alt = fv('venueName');
     photo.onerror = () => photo.closest('.venue-photo').classList.add('is-empty');
   } else {
     photo.closest('.venue-photo').classList.add('is-empty');
@@ -142,11 +136,11 @@ function fillText() {
 
   // Xarita
   const query = data.mapQuery || (data.venueName + ' ' + data.venueAddress);
-  $('mapFrame').src = mapEmbedUrl(query, data.mapProvider);
+  $('mapFrame').src = mapEmbedUrl(query, data.mapProvider, LANG);
   $('mapLink').href = mapLinkUrl(query, data.mapProvider);
 
   // Kalendar havolasi
-  $('addCal').href = buildCalendarLink(data);
+  $('addCal').href = buildCalendarLink(data, LANG);
 
   // To'yona
   $('cardNumber').textContent = data.cardNumber;
@@ -167,9 +161,9 @@ function renderGallery() {
     const fig = el('figure');
     const img = el('img');
     img.src = src;
-    img.alt = "To'y surati " + (i + 1);
+    img.alt = tr('galleryAlt') + ' ' + (i + 1);
     img.loading = 'lazy';
-    img.onerror = () => { img.src = placeholderImage(data.groom, data.bride); };
+    img.onerror = () => { img.src = placeholderImage(fv('groom'), fv('bride')); };
     fig.appendChild(img);
 
     const hidden = photos.length - GALLERY_VISIBLE;
@@ -209,14 +203,14 @@ function renderCalendar() {
 
   const host = $('calendar');
   host.textContent = '';
-  host.appendChild(el('div', 'cal-head', UZ_MONTHS[month] + ' ' + year));
+  host.appendChild(el('div', 'cal-head', I18N_MONTHS[LANG][month] + ' ' + year));
 
   const grid = el('div', 'cal-grid');
-  UZ_DOW.forEach(d => grid.appendChild(el('div', 'dow', d)));
+  I18N_DOW[LANG].forEach(d => grid.appendChild(el('div', 'dow', d)));
   for (let i = 0; i < leadingBlanks; i++) grid.appendChild(el('div'));
   for (let day = 1; day <= daysInMonth; day++) {
     const cell = el('div', 'day' + (day === weddingDay ? ' is-wedding' : ''), String(day));
-    if (day === weddingDay) cell.setAttribute('aria-label', "To'y kuni: " + day);
+    if (day === weddingDay) cell.setAttribute('aria-label', tr('weddingDayLabel') + ': ' + day);
     grid.appendChild(cell);
   }
   host.appendChild(grid);
@@ -248,8 +242,9 @@ function renderSchedule() {
     const iconBox = el('span', 't-icon');
     iconBox.appendChild(icon(item.icon || 'rings'));
     const body = el('div');
+    const label = (LANG === 'ru' && item.labelRu) ? item.labelRu : item.label;
     body.appendChild(el('span', 't-time', item.time));
-    body.appendChild(el('div', 't-label', item.label));
+    body.appendChild(el('div', 't-label', label));
     li.append(iconBox, body);
     host.appendChild(li);
   });
@@ -281,14 +276,14 @@ function submitWish(e) {
   const text = $('wishText').value.trim();
 
   if (!name || !text) {
-    flash(msg, 'Ism va tilak matnini to’ldiring.', true);
+    flash(msg, tr('wishEmpty'), true);
     return;
   }
 
   data = Store.addWish({ name, date: todayLabel(), text });
   renderWishes();
   $('wishForm').reset();
-  flash(msg, 'Rahmat! Tilagingiz qo’shildi.');
+  flash(msg, tr('wishThanks'));
 }
 
 /* ---------- 8. To'yona — raqamdan nusxa ---------- */
@@ -298,7 +293,7 @@ function bindCopyCard() {
     const number = data.cardNumber.replace(/\s+/g, '');
     try {
       await navigator.clipboard.writeText(number);
-      flash(msg, 'Karta raqami nusxalandi.');
+      flash(msg, tr('copyOk'));
     } catch (err) {
       console.warn('Clipboard ishlamadi, fallback', err);
       const tmp = el('textarea');
@@ -310,7 +305,7 @@ function bindCopyCard() {
       tmp.select();
       const ok = document.execCommand('copy');
       document.body.removeChild(tmp);
-      flash(msg, ok ? 'Karta raqami nusxalandi.' : 'Nusxa olinmadi — qo’lda ko’chiring.', !ok);
+      flash(msg, ok ? tr('copyOk') : tr('copyFail'), !ok);
     }
   });
 }
@@ -361,9 +356,9 @@ function renderContact() {
   host.textContent = '';
 
   const cards = [
-    { icon: 'phone',     title: 'Telefon',   value: data.phone,           href: 'tel:' + data.phone.replace(/[^+\d]/g, '') },
-    { icon: 'telegram',  title: 'Telegram',  value: '@' + data.telegram,  href: 'https://t.me/' + data.telegram },
-    { icon: 'instagram', title: 'Instagram', value: '@' + data.instagram, href: 'https://instagram.com/' + data.instagram }
+    { icon: 'phone',     title: tr('contactPhone'),     value: data.phone,           href: 'tel:' + data.phone.replace(/[^+\d]/g, '') },
+    { icon: 'telegram',  title: tr('contactTelegram'),  value: '@' + data.telegram,  href: 'https://t.me/' + data.telegram },
+    { icon: 'instagram', title: tr('contactInstagram'), value: '@' + data.instagram, href: 'https://instagram.com/' + data.instagram }
   ];
 
   cards.forEach(card => {
@@ -397,7 +392,7 @@ function setMusicState(on) {
   const btn = $('musicToggle');
   if (!btn) return;
   btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.setAttribute('aria-label', on ? "Musiqani o'chirish" : 'Musiqani yoqish');
+  btn.setAttribute('aria-label', on ? tr('musicOn') : tr('musicOff'));
 }
 
 // Musiqani boshlash (mp3 berilgan bo'lsa). Promise qaytaradi.
@@ -520,6 +515,7 @@ function openEnvelope() {
 
 /* ---------- init ---------- */
 function init() {
+  applyUiStrings(LANG);
   applyTheme();
   fillText();
   renderGallery();
@@ -536,7 +532,8 @@ function init() {
   $('openInvite').addEventListener('click', openEnvelope);
   $('wishForm').addEventListener('submit', submitWish);
   $('magicBtn').addEventListener('click', () => {
-    $('wishText').value = MAGIC_WISHES[Math.floor(Math.random() * MAGIC_WISHES.length)];
+    const pool = MAGIC_WISHES_I18N[LANG] || MAGIC_WISHES_I18N[DEFAULT_LANG];
+    $('wishText').value = pool[Math.floor(Math.random() * pool.length)];
     $('wishText').focus();
   });
 

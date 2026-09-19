@@ -41,7 +41,7 @@ function logout() {
 
 /* ---------- maydonlar ---------- */
 const SIMPLE_FIELDS = [
-  'theme',
+  'theme', 'lang',
   'groom', 'bride', 'family', 'eventType', 'greeting', 'inviteTitle',
   'introText', 'storyText', 'closingText',
   'weekday', 'dayNum', 'monthLabel', 'time', 'dateLine',
@@ -57,6 +57,13 @@ function buildForm() {
   SIMPLE_FIELDS.forEach(key => {
     const field = $('f-' + key);
     if (field) field.value = data[key] || '';
+  });
+
+  // Rus tilidagi variantlar
+  data.ru = data.ru || {};
+  TRANSLATABLE.forEach(key => {
+    const field = $('f-ru-' + key);
+    if (field) field.value = data.ru[key] || '';
   });
 
   // datetime-local uchun mahalliy vaqt formatida
@@ -138,7 +145,7 @@ function buildScheduleEditor() {
   host.textContent = '';
   (data.schedule || []).forEach((item, i) => {
     const box = el('div', 'le-item');
-    const row = el('div', 'le-row');
+    const row = el('div', 'le-row le-row-sched');
 
     const select = el('select', 'le-icon');
     SCHEDULE_ICONS.forEach(name => {
@@ -151,6 +158,7 @@ function buildScheduleEditor() {
     row.append(
       input('le-a', '18:00', item.time),
       input('le-b', 'Band nomi', item.label),
+      input('le-b2', 'Band nomi (RU)', item.labelRu),
       select,
       delButton(() => { data.schedule.splice(i, 1); buildScheduleEditor(); })
     );
@@ -159,7 +167,7 @@ function buildScheduleEditor() {
   });
   host.appendChild(addButton("Band qo'shish", () => {
     data.schedule = data.schedule || [];
-    data.schedule.push({ time: '18:00', label: '', icon: 'rings' });
+    data.schedule.push({ time: '18:00', label: '', labelRu: '', icon: 'rings' });
     buildScheduleEditor();
   }));
 }
@@ -196,6 +204,12 @@ function collectForm() {
     if (field) data[key] = field.value;
   });
 
+  data.ru = data.ru || {};
+  TRANSLATABLE.forEach(key => {
+    const field = $('f-ru-' + key);
+    if (field) data.ru[key] = field.value.trim();
+  });
+
   const dt = $('f-dateISO').value;
   if (dt) data.dateISO = new Date(dt).toISOString();
 
@@ -207,6 +221,7 @@ function collectForm() {
     .map(item => ({
       time: item.querySelector('.le-a').value.trim(),
       label: item.querySelector('.le-b').value.trim(),
+      labelRu: item.querySelector('.le-b2').value.trim(),
       icon: item.querySelector('.le-icon').value
     }))
     .filter(x => x.time || x.label);
@@ -237,7 +252,34 @@ function resetAll() {
 }
 
 function refreshPreview() {
-  $('preview').src = 'index.html?t=' + Date.now();
+  $('preview').src = 'index.html?lang=' + $('previewLang').value + '&t=' + Date.now();
+}
+
+/* ---------- mehmonga yuboriladigan havola ---------- */
+function inviteUrl(lang) {
+  const url = new URL('index.html', location.href);
+  url.searchParams.set('lang', lang);
+  return url.toString();
+}
+
+async function copyInviteLink(lang) {
+  const link = inviteUrl(lang);
+  try {
+    await navigator.clipboard.writeText(link);
+    toast('Havola nusxalandi: ' + link);
+  } catch (err) {
+    console.warn('Clipboard ishlamadi, fallback', err);
+    const tmp = el('textarea');
+    tmp.value = link;
+    tmp.setAttribute('readonly', '');
+    tmp.style.position = 'fixed';
+    tmp.style.opacity = '0';
+    document.body.appendChild(tmp);
+    tmp.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(tmp);
+    toast(ok ? 'Havola nusxalandi: ' + link : 'Nusxa olinmadi — ' + link);
+  }
 }
 
 function toast(message) {
@@ -255,6 +297,9 @@ function init() {
   $('logoutBtn').addEventListener('click', logout);
   $('saveBtn').addEventListener('click', save);
   $('resetBtn').addEventListener('click', resetAll);
+  $('copyUzLink').addEventListener('click', () => copyInviteLink('uz'));
+  $('copyRuLink').addEventListener('click', () => copyInviteLink('ru'));
+  $('previewLang').addEventListener('change', refreshPreview);
 
   let authed = false;
   try { authed = sessionStorage.getItem(AUTH_KEY) === '1'; } catch (e) { /* noop */ }
