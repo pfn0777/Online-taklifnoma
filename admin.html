@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taklifnoma — Admin panel</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-screen" id="loginScreen">
+  <form class="login-card" onsubmit="return false">
+    <h1>Admin panel</h1>
+    <p>Taklifnomani tahrirlash uchun parolni kiriting</p>
+    <input type="password" id="loginPass" placeholder="••••" autocomplete="current-password">
+    <button type="button" id="loginBtn">Kirish</button>
+    <p class="login-error" id="loginError" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div class="admin" id="admin">
+  <header class="topbar">
+    <span class="brand">Taklifnoma admin</span>
+    <div class="actions">
+      <a href="index.html" target="_blank" rel="noopener">Ko'rish</a>
+      <button type="button" id="resetBtn">Qayta tiklash</button>
+      <button type="button" id="logoutBtn">Chiqish</button>
+      <button type="button" class="save-btn" id="saveBtn">Saqlash</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- ---- Chap ustun ---- -->
+    <div class="column">
+      <section class="panel">
+        <h2>Juftlik va taklif</h2>
+        <label class="field">
+          <span>Tema</span>
+          <select id="f-theme"></select>
+          <em class="hint">Taklifnomaning butun ko'rinishi — rang va shrift.</em>
+        </label>
+        <div class="field-row">
+          <label class="field"><span>Kuyov ismi</span><input id="f-groom"></label>
+          <label class="field"><span>Kelin ismi</span><input id="f-bride"></label>
+        </div>
+        <label class="field"><span>Oila nomi</span><input id="f-family"></label>
+        <label class="field"><span>Tadbir turi</span><input id="f-eventType"></label>
+        <div class="field-row">
+          <label class="field"><span>Konvert salomlashuvi</span><input id="f-greeting"></label>
+          <label class="field"><span>Konvert yorlig'i</span><input id="f-inviteTitle"></label>
+        </div>
+        <label class="field"><span>Taklif matni</span><textarea id="f-introText"></textarea></label>
+        <label class="field"><span>Hikoya matni</span><textarea id="f-storyText"></textarea></label>
+        <label class="field"><span>Yakuniy matn (footer)</span><input id="f-closingText"></label>
+      </section>
+
+      <section class="panel">
+        <h2>Sana va vaqt</h2>
+        <label class="field">
+          <span>Sana va vaqt</span>
+          <input type="datetime-local" id="f-dateISO">
+          <em class="hint">Countdown va kalendar shu qiymatdan hisoblanadi.</em>
+        </label>
+        <div class="field-row">
+          <label class="field"><span>Hafta kuni</span><input id="f-weekday"></label>
+          <label class="field"><span>Kun raqami</span><input id="f-dayNum"></label>
+        </div>
+        <div class="field-row">
+          <label class="field"><span>Oy yorlig'i</span><input id="f-monthLabel"></label>
+          <label class="field"><span>Vaqt</span><input id="f-time"></label>
+        </div>
+        <label class="field"><span>To'liq sana qatori</span><input id="f-dateLine"></label>
+      </section>
+
+      <section class="panel">
+        <h2>Manzil</h2>
+        <label class="field"><span>To'yxona nomi</span><input id="f-venueName"></label>
+        <label class="field"><span>Manzil</span><input id="f-venueAddress"></label>
+        <label class="field"><span>To'yxona surati (havola)</span><input id="f-venuePhoto"></label>
+        <div class="field-row">
+          <label class="field">
+            <span>Xarita qidiruvi</span><input id="f-mapQuery">
+            <em class="hint">Masalan: Navro'z To'yxonasi, Chirchiq</em>
+          </label>
+          <label class="field">
+            <span>Xarita xizmati</span>
+            <select id="f-mapProvider">
+              <option value="yandex">Yandex (tavsiya)</option>
+              <option value="google">Google</option>
+            </select>
+            <em class="hint">O'zbekistonda Yandex ma'lumoti aniqroq.</em>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Bog'lanish va ulashish</h2>
+        <div class="field-row">
+          <label class="field"><span>Telefon</span><input id="f-phone"></label>
+          <label class="field"><span>Telegram</span><input id="f-telegram"></label>
+        </div>
+        <div class="field-row">
+          <label class="field"><span>Instagram</span><input id="f-instagram"></label>
+          <label class="field">
+            <span>Musiqa (mp3)</span><input id="f-musicUrl" placeholder="musiqa.mp3">
+            <em class="hint">Bo'sh qolsa musiqa tugmasi umuman ko'rinmaydi. Hech qachon o'zi boshlanmaydi.</em>
+          </label>
+        </div>
+        <label class="field">
+          <span>Ulashish surati (og:image)</span><input id="f-ogImage">
+          <em class="hint">Telegram'ga havola tashlanganda ko'rinadigan rasm. Bo'sh qolsa to'yxona surati ishlatiladi.</em>
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>To'yona (sovg'a)</h2>
+        <label class="field"><span>Sarlavha</span><input id="f-giftTitle"></label>
+        <label class="field"><span>Matn</span><textarea id="f-giftText"></textarea></label>
+        <div class="field-row">
+          <label class="field"><span>Karta raqami</span><input id="f-cardNumber"></label>
+          <label class="field"><span>Bank / tizim</span><input id="f-cardBank" placeholder="Uzcard / Humo"></label>
+        </div>
+        <label class="field"><span>Karta egasi</span><input id="f-cardHolder"></label>
+        <label class="field">
+          <span>To'lov havolasi</span><input id="f-paymentLink" placeholder="Payme yoki Click havolasi">
+          <em class="hint">Ixtiyoriy. Bo'sh qolsa tugma ko'rinmaydi.</em>
+        </label>
+      </section>
+    </div>
+
+    <!-- ---- O'ng ustun ---- -->
+    <div class="column">
+      <section class="panel">
+        <h2>Galereya</h2>
+        <div class="list-editor" id="galleryEditor"></div>
+      </section>
+
+      <section class="panel">
+        <h2>To'y dasturi</h2>
+        <div class="list-editor" id="scheduleEditor"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Mehmon tilaklari</h2>
+        <div class="list-editor" id="wishesEditor"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Jonli ko'rinish</h2>
+        <p class="hint">Saqlaganingizdan so'ng yangilanadi.</p>
+        <div class="preview-frame"><iframe id="preview" src="index.html" title="Taklifnoma ko'rinishi"></iframe></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="store.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

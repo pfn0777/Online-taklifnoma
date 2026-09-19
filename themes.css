@@ -1,0 +1,118 @@
+/* ============================================================
+   TEMA TOKENLARI
+   Har tema — rang + shrift + ornament to'plami.
+   Struktura style.css da, u temadan mustaqil.
+
+   Yangi tema qo'shish (5 qadam):
+     1. Shu yerga [data-theme="nom"] bloki
+     2. index.html <head> ga kerakli Google Font
+     3. Ornament kerak bo'lsa — index.html sprite'iga <symbol id="i-*-nom">
+     4. config.js THEMES ro'yxatiga qo'shish
+     5. admin.html <select id="f-theme"> ga <option>
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   JASMINE WHITE — iliq ivory qog'oz, zaytun, script ismlar
+   Manba: chorlove.uz/templates/jasmine-white
+   ------------------------------------------------------------ */
+[data-theme="jasmine-white"] {
+  --paper:     #FBF7F2;   /* iliq ivory fon */
+  --paper-2:   #F3EDE4;   /* ajratilgan bo'lim */
+  --card:      #FFFFFF;
+  --ink:       #2A2A24;   /* paper'da 14.6:1 */
+  --ink-2:     #6B6458;   /* paper'da 5.5:1 — AA */
+  --primary:   #404A1D;   /* paper'da 8.9:1 — AAA */
+  --primary-2: #5A6628;
+  --accent:    #A69689;   /* FAQAT chiziq/ornament — matn uchun yaroqsiz (2.4:1) */
+  --line:      #E0D8CC;
+
+  --display: "Great Vibes", cursive;
+  --serif:   "Cormorant Garamond", Georgia, serif;
+  --sans:    "Jost", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Script shrift: uppercase va tracking uni buzadi */
+  --display-case: none;
+  --display-tracking: 0;
+  --display-scale: 1;
+
+  --orn-sprig: url("#i-sprig");
+}
+
+/* ------------------------------------------------------------
+   GREEN WHITE — sovuq oq, to'q zaytun, formal antiqva ismlar
+   Manba: chorlove.uz/templates/green-white
+   Ornamentlar: Stitch'da generatsiya qilingan (stitch/green-white/)
+   ------------------------------------------------------------ */
+[data-theme="green-white"] {
+  --paper:     #FFFDFB;   /* sovuq deyarli oq */
+  --paper-2:   #F4F5EF;
+  --card:      #FFFFFF;
+  --ink:       #2D321B;   /* paper'da 12.9:1 */
+  --ink-2:     #666947;   /* paper'da 5.6:1 — AA */
+  --primary:   #2D321B;
+  --primary-2: #666947;
+  --accent:    #A69689;
+  --line:      #E5E0D8;
+
+  --display: "Marcellus", Georgia, serif;
+  --serif:   "Cormorant Garamond", Georgia, serif;
+  --sans:    "Jost", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Antiqva shrift: uppercase + tracking — green-white ning asosiy qarori */
+  --display-case: uppercase;
+  --display-tracking: 0.08em;
+  /* Marcellus bir xil kegelda Great Vibes'dan ancha yirik ko'rinadi */
+  --display-scale: 0.72;
+}
+
+/* green-white ornamentlari: ingichka novda o'rniga botanik to'plam */
+[data-theme="green-white"] .orn-sprig {
+  width: 8.75rem;
+  height: 2.5rem;
+  color: var(--primary);
+}
+
+/* Bo'lim burchaklaridagi yengil botanik qatlam — faqat green-white'da */
+[data-theme="green-white"] .sheet {
+  position: relative;
+}
+[data-theme="green-white"] .sheet > .sheet-orn {
+  position: absolute;
+  width: 7.5rem;
+  height: 7.5rem;
+  color: var(--primary-2);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Bloom effekti saqlanadi: bo'lim ko'ringandagina to'liq opacity */
+[data-theme="green-white"] .sheet.is-visible .sheet-orn { opacity: 0.28; }
+[data-theme="green-white"] .sheet > .sheet-orn.tl { top: 0.5rem; left: 0.25rem; }
+[data-theme="green-white"] .sheet > .sheet-orn.br { bottom: 0.5rem; right: 0.25rem; transform: rotate(180deg); }
+[data-theme="green-white"] .sheet > *:not(.sheet-orn):not(.floral) { position: relative; z-index: 1; }
+
+/* Konvert kartasi — green-white'da qog'oz hoshiyasi quyuqroq */
+[data-theme="green-white"] .env-card::before { inset: 0.625rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme="green-white"] .sheet > .sheet-orn { transition: opacity var(--t-slow) var(--ease); }
+}
+
+/* Sovg'a qutisi — green-white'da quyuq zaytun */
+/* Sovg'a qutisi endi akvarel rasm — tema bo'yicha rang moslash kerak emas */
+
+/* Konvert ekranidagi burchak bezaklari (JS qo'shadi) */
+/* .envelope allaqachon position:fixed &mdash; containing block sifatida yetarli */
+[data-theme="green-white"] .envelope { overflow: hidden; }
+[data-theme="green-white"] .envelope > .sheet-orn {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  color: var(--primary-2);
+  opacity: 0.26;
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="green-white"] .envelope > .sheet-orn.tl { top: -1rem; left: -1.5rem; }
+[data-theme="green-white"] .envelope > .sheet-orn.br { bottom: -1rem; right: -1.5rem; transform: rotate(180deg); }
+[data-theme="green-white"] .envelope > .env-body,
+[data-theme="green-white"] .envelope > .btn-open { position: relative; z-index: 1; }
