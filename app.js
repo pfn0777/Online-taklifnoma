@@ -514,8 +514,22 @@ function openEnvelope() {
   else setTimeout(reveal, ENVELOPE_ANIM_MS / 2);
 }
 
+/* Havolada ?lang= bo'lmasa, aniqlangan tilni manzilga yozadi —
+   adres satridan nusxalangan havola ham tilni saqlab qoladi. */
+function persistLangInUrl() {
+  try {
+    const url = new URL(location.href);
+    if (url.searchParams.has('lang')) return;
+    url.searchParams.set('lang', LANG);
+    history.replaceState(null, '', url.toString());
+  } catch (e) {
+    console.warn('Manzilga til yozib bo\'lmadi', e);
+  }
+}
+
 /* ---------- init ---------- */
 function init() {
+  persistLangInUrl();
   applyUiStrings(LANG);
   applyTheme();
   fillText();

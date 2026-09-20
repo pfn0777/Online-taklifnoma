@@ -332,6 +332,9 @@ function init() {
   $('copyUzLink').addEventListener('click', () => copyInviteLink('uz'));
   $('copyRuLink').addEventListener('click', () => copyInviteLink('ru'));
   $('previewLang').addEventListener('change', refreshPreview);
+  $('viewLink').addEventListener('click', (e) => {
+    e.currentTarget.href = inviteUrl($('f-lang').value);
+  });
 
   if (Store.isAuthed()) showAdmin();
   else $('loginEmail').focus();
