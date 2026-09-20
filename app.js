@@ -4,13 +4,13 @@
    innerHTML ishlatilmaydi — faqat textContent / createElement.
    ============================================================ */
 
-let data = Store.load();
+let data = Store.deepClone(DEFAULT_DATA);   // start() serverdan kelganini qo'yadi
 
 const $ = (id) => document.getElementById(id);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Til: havoladagi ?lang=ru ustun, bo'lmasa admin tanlagan default (i18n.js)
-const LANG = detectLang(data.lang);
+let LANG = detectLang(data.lang);
 const tr = (key) => t(key, LANG);
 const fv = (key) => fieldValue(data, key, LANG);
 
@@ -263,13 +263,7 @@ function renderWishes() {
   });
 }
 
-function todayLabel() {
-  const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  return pad(now.getDate()) + '.' + pad(now.getMonth() + 1) + '.' + now.getFullYear();
-}
-
-function submitWish(e) {
+async function submitWish(e) {
   e.preventDefault();
   const msg = $('wishMsg');
   const name = $('wishName').value.trim();
@@ -280,7 +274,14 @@ function submitWish(e) {
     return;
   }
 
-  data = Store.addWish({ name, date: todayLabel(), text });
+  try {
+    const wish = await Store.addWish({ name, text });
+    data.wishes = (data.wishes || []).concat(wish);
+  } catch (err) {
+    console.error('Tilakni yuborib bo\'lmadi', err);
+    flash(msg, tr('wishFailed'), true);
+    return;
+  }
   renderWishes();
   $('wishForm').reset();
   flash(msg, tr('wishThanks'));
@@ -548,4 +549,8 @@ function init() {
   setInterval(renderCountdown, 1000);
 }
 
-init();
+Store.load().then(loaded => {
+  data = loaded;
+  LANG = detectLang(data.lang);
+  init();
+});

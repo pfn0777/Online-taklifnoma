@@ -11,6 +11,10 @@
 v1 — `chorlove.uz/templates/jasmine-white` shablonining qo'lda qayta qurilgan nusxasi.
 Backend yo'q, `localStorage`da ishlaydi, admin paneli bor.
 
+> **Yangilanish:** B1/B2 hal qilindi — ma'lumot va tilaklar Supabase'da (RLS), admin kirishi
+> Supabase Auth, tilak yuborish Vercel Function `api/wishes.js` (IP rate-limit). K1 (klientdagi
+> parol) olib tashlandi. B3 (RSVP) hali qilinmagan. Quyidagi matn tarixiy holatni tasvirlaydi.
+
 Bu spec quyidagilarni qamrab oladi:
 1. chorlove shablonlari bilan solishtirish (fakt asosida, sayt kodidan olingan)
 2. v1 kritikasi (dizayn + kod + mahsulot)

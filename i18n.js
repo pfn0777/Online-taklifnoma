@@ -57,6 +57,7 @@ const UI = {
     wishMagic: 'Tayyor tilak',
     wishEmpty: 'Ism va tilak matnini to’ldiring.',
     wishThanks: 'Rahmat! Tilagingiz qo’shildi.',
+    wishFailed: 'Tilakni yuborib bo’lmadi. Birozdan keyin qayta urinib ko’ring.',
 
     /* to'yona */
     giftEyebrow: "E'tibor uchun",
@@ -128,6 +129,7 @@ const UI = {
     wishMagic: 'Готовое пожелание',
     wishEmpty: 'Заполните имя и текст пожелания.',
     wishThanks: 'Спасибо! Ваше пожелание добавлено.',
+    wishFailed: 'Не удалось отправить пожелание. Попробуйте чуть позже.',
 
     /* to'yona */
     giftEyebrow: 'Обратите внимание',

@@ -1,0 +1,13 @@
+{
+  "name": "taklifnoma-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiny API for the wedding invitation: admin auth, invitation data, guest wishes",
+  "main": "index.js",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --env-file=.env index.js",
+    "test": "node --test \"test/*.test.js\""
+  }
+}

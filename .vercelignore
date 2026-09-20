@@ -3,8 +3,12 @@
 # Stitch manba plitalari — assets/ ular yasalgan, saytga kerak emas
 stitch/
 
-# Tekshirish va generator skriptlari — build step yo'q, brauzerda ishlamaydi
+# Eski Hetzner backend (Supabase'ga o'tilgan) — Vercel'ga kerak emas
+server/
+
+# Tekshirish, test va generator skriptlari — brauzerda ishlamaydi
 scripts/
+test/
 .preview/
 
 # Hujjatlar

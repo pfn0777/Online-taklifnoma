@@ -170,6 +170,17 @@ const noLabelRu = (DEFAULT_DATA.schedule || []).filter(x => !x.labelRu);
 check('schedule labelRu', noLabelRu.length === 0,
   noLabelRu.length ? noLabelRu.map(x => x.label).join(', ') : DEFAULT_DATA.schedule.length + ' band');
 
+/* ---------- 8. Backend ulanishi ---------- */
+console.log('\n[8] Backend');
+const supabaseUrl = (cfg.match(/const SUPABASE_URL = '([^']*)'/) || [])[1] || '';
+const anonKey = (cfg.match(/const SUPABASE_ANON_KEY = '([^']*)'/) || [])[1] || '';
+check('SUPABASE_URL berilgan', /^https:\/\/[a-z0-9]+\.supabase\.co$/.test(supabaseUrl), supabaseUrl || 'topilmadi');
+check('SUPABASE_ANON_KEY berilgan', anonKey.length > 20, anonKey ? 'bor' : 'topilmadi');
+const frontendFiles = ['config.js', 'store.js', 'app.js', 'admin.js', 'index.html', 'admin.html'];
+check('frontend da service_role yo’q',
+  !frontendFiles.some(f => /service_role|SERVICE_ROLE/.test(read(f))));
+check('admin.js da parol yo’q', !/ADMIN_PASS|['"]1234['"]/.test(read('admin.js')));
+
 /* ---------- natija ---------- */
 console.log('\n' + (failures ? failures + ' ta xato' : 'Hammasi joyida') + '\n');
 process.exit(failures ? 1 : 0);

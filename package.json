@@ -1,0 +1,10 @@
+{
+  "name": "online-taklifnoma",
+  "private": true,
+  "description": "Static wedding invitation (Vercel) + Supabase backend",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "verify": "node scripts/verify.js",
+    "test": "node --test test/*.test.js"
+  }
+}

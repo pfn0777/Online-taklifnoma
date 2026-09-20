@@ -3,6 +3,11 @@
    Saqlash/o'qish store.js ichida. Bu fayl faqat MODEL.
    ============================================================ */
 
+/* Supabase loyihasi. Anon (publishable) kalit ochiq bo'lishi xavfsiz —
+   himoya RLS siyosatlarida. Maxfiy (server) kalit bu yerga HECH QACHON yozilmaydi. */
+const SUPABASE_URL = 'https://gearyufbppfwfyjlbwzy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_LFKZVRjtFmSchcqDJjds3A_rhqRJU59';
+
 /* Mavjud temalar. Yangi tema qo'shish yo'riqnomasi — themes.css boshida. */
 /* Akvarel gul assetlari — Stitch'da generatsiya qilingan.
    Manba plitalar: stitch/jasmine-akvarel/, qayta ishlash: scripts/make-assets.py

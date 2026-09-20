@@ -1,2 +1,7 @@
 .preview/
 *.log
+node_modules/
+server/.env
+server/*.db
+server/*.db-shm
+server/*.db-wal

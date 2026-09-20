@@ -43,8 +43,13 @@ tushishi `config.js` dagi `FLORAL_SET` da.
 **Mehmon uchun** — `index.html`. Konvert ochiladi, so'ng: kirish → galereya →
 sana va countdown → manzil → dastur → tilaklar → to'yona → kontakt.
 
-**Tahrirlash** — `admin.html`, parol `1234` (`admin.js:12`).
-Barcha maydonlarni to'ldiring → **Saqlash**.
+**Tahrirlash** — `admin.html`, email + parol bilan Supabase Auth orqali kiriladi.
+Barcha maydonlarni to'ldiring → **Saqlash** — o'zgarish hamma mehmonga ko'rinadi.
+
+**Backend** — Supabase (Postgres + Auth + RLS), tilak yuborish — Vercel Function
+`api/wishes.js`. Sozlash: Supabase'da admin user yarating (Authentication → Users,
+"Allow new users to sign up" o'chiq), Vercel'da env: `SUPABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY` (faqat Vercel'da, kodga yozilmaydi).
 
 ## v1'dan farqi
 
@@ -114,14 +119,11 @@ Gorizontal overflow, konsol xatolari va sahifa bo'laklarini beradi.
 
 ## Ma'lum cheklovlar
 
-**Bu versiya hali sotuvga tayyor emas.** Sabab — `localStorage`:
+Ma'lumot va tilaklar Supabase'da. Supabase yoki internet o'chsa mehmon oxirgi
+keshlangan yoki default matnni ko'radi, lekin tilak yozib bo'lmaydi. Bepul Supabase
+loyihasi 1 hafta faolliksiz qolsa pauza qilinadi.
 
-- Admin o'z brauzerida tahrirlaydi → mehmon boshqa qurilmada **default matnni** ko'radi
-- Mehmon yozgan tilak **faqat o'sha mehmonning brauzerida** qoladi
-- Admin paroli klient tomonda — himoya emas
-
-Hal qilish uchun backend kerak. `store.js` shu maqsadda ajratilgan: uning ichini
-Supabase chaqiruvlariga almashtirsangiz, `index.html` va `app.js` o'zgarmaydi.
+Admin tilaklarni faqat ko'ra va o'chira oladi (tahrirlash/qo'shish yo'q).
 
 `musiqa.mp3` (4.2 MB) repoda turibdi, lekin `musicUrl` bo'sh — ishlatilmayapti.
 Kerak bo'lsa admin panelda `musiqa.mp3` deb yozing, aks holda faylni o'chirish mumkin.

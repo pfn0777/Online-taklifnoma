@@ -1,42 +1,64 @@
 /* ============================================================
    JASMINE TAKLIFNOMA v3 — admin panel logikasi
-
-   OGOHLANTIRISH: bu parol klient tomonda tekshiriladi va
-   HIMOYA EMAS. Sahifa kodini ochgan har kim uni ko'radi.
-   Haqiqiy himoya backend ulanganda qo'shiladi (docs/SPEC.md).
-   Hozircha u faqat tasodifiy ochilishdan to'sadi.
+   Kirish Supabase Auth orqali (email + parol), token store.js'da.
    ============================================================ */
 
-const ADMIN_PASS = '1234';
-const AUTH_KEY = 'jasmine_taklifnoma_auth';
 const TOAST_MS = 2200;
+const HTTP_BAD_REQUEST = 400;
+const HTTP_UNAUTHORIZED = 401;
+const HTTP_TOO_MANY = 429;
 
-let data = Store.load();
+let data = null;
 
 const $ = (id) => document.getElementById(id);
 
 /* ---------- login ---------- */
-function tryLogin() {
-  const value = $('loginPass').value.trim();
-  if (value === ADMIN_PASS) {
-    try { sessionStorage.setItem(AUTH_KEY, '1'); } catch (e) { /* private mode */ }
-    showAdmin();
-  } else {
-    $('loginError').textContent = "Noto'g'ri parol. Qayta urinib ko'ring.";
+async function tryLogin() {
+  const email = $('loginEmail').value.trim();
+  const value = $('loginPass').value;
+  if (!email || !value) return;
+  try {
+    await Store.login(email, value);
+  } catch (err) {
+    console.warn('Login muvaffaqiyatsiz', err);
+    $('loginError').textContent = loginErrorText(err);
     $('loginPass').value = '';
     $('loginPass').focus();
+    return;
   }
+  $('loginError').textContent = '';
+  await showAdmin();
 }
 
-function showAdmin() {
+function loginErrorText(err) {
+  if (err.status === HTTP_UNAUTHORIZED || err.status === HTTP_BAD_REQUEST) {
+    return "Email yoki parol noto'g'ri. Qayta urinib ko'ring.";
+  }
+  if (err.status === HTTP_TOO_MANY) return "Juda ko'p urinish. Birozdan keyin qayta urining.";
+  return "Serverga ulanib bo'lmadi. Internetni tekshiring.";
+}
+
+async function showAdmin() {
+  data = await Store.load();
   $('loginScreen').style.display = 'none';
   $('admin').classList.add('is-visible');
   buildForm();
 }
 
 function logout() {
-  try { sessionStorage.removeItem(AUTH_KEY); } catch (e) { /* noop */ }
+  Store.logout();
   location.reload();
+}
+
+// Token eskirgan bo'lsa login ekraniga qaytamiz; boshqa xatoni xabar qilamiz.
+function handleRequestError(err, fallbackMessage) {
+  console.error(fallbackMessage, err);
+  if (err.status === HTTP_UNAUTHORIZED) {
+    toast('Sessiya tugadi. Qayta kiring.');
+    setTimeout(() => location.reload(), TOAST_MS);
+    return;
+  }
+  toast(fallbackMessage);
 }
 
 /* ---------- maydonlar ---------- */
@@ -172,29 +194,36 @@ function buildScheduleEditor() {
   }));
 }
 
-/* ---------- tilaklar ---------- */
+/* ---------- tilaklar (faqat ko'rish va o'chirish; o'chirish darrov serverga ketadi) ---------- */
 function buildWishesEditor() {
   const host = $('wishesEditor');
   host.textContent = '';
-  (data.wishes || []).forEach((w, i) => {
+  const wishes = data.wishes || [];
+  if (!wishes.length) host.appendChild(el('p', 'hint', "Hozircha tilaklar yo'q."));
+
+  wishes.forEach(w => {
     const box = el('div', 'le-item');
-    const row = el('div', 'le-row');
+    const row = el('div', 'le-row le-row-wide');
     row.append(
-      input('w-name', 'Ism', w.name),
-      input('w-date', 'Sana', w.date),
-      delButton(() => { data.wishes.splice(i, 1); buildWishesEditor(); })
+      el('strong', null, w.name + ' • ' + w.date),
+      delButton(() => removeWish(w))
     );
-    const text = el('textarea', 'w-text');
-    text.placeholder = 'Tilak matni';
-    text.value = w.text || '';
-    box.append(row, text);
+    box.append(row, el('div', null, w.text));
     host.appendChild(box);
   });
-  host.appendChild(addButton("Tilak qo'shish", () => {
-    data.wishes = data.wishes || [];
-    data.wishes.push({ name: '', date: '', text: '' });
-    buildWishesEditor();
-  }));
+}
+
+async function removeWish(wish) {
+  if (!confirm("Bu tilak o'chiriladi. Davom etasizmi?")) return;
+  try {
+    await Store.deleteWish(wish.id);
+  } catch (err) {
+    handleRequestError(err, "Tilakni o'chirib bo'lmadi");
+    return;
+  }
+  data.wishes = data.wishes.filter(w => w.id !== wish.id);
+  buildWishesEditor();
+  toast("Tilak o'chirildi");
 }
 
 /* ---------- saqlash ---------- */
@@ -225,27 +254,29 @@ function collectForm() {
       icon: item.querySelector('.le-icon').value
     }))
     .filter(x => x.time || x.label);
-
-  data.wishes = [...$('wishesEditor').querySelectorAll('.le-item')]
-    .map(item => ({
-      name: item.querySelector('.w-name').value.trim(),
-      date: item.querySelector('.w-date').value.trim(),
-      text: item.querySelector('.w-text').value.trim()
-    }))
-    .filter(x => x.name || x.text);
 }
 
-function save() {
+async function save() {
   collectForm();
-  const ok = Store.save(data);
-  toast(ok ? 'Saqlandi' : 'Saqlab bo’lmadi — brauzer xotirasi to’la yoki bloklangan');
-  if (ok) refreshPreview();
+  try {
+    await Store.save(data);
+  } catch (err) {
+    handleRequestError(err, "Saqlab bo'lmadi — server javob bermadi");
+    return;
+  }
+  toast('Saqlandi');
+  refreshPreview();
 }
 
-function resetAll() {
-  if (!confirm("Barcha o'zgarishlar va mehmon javoblari o'chadi. Davom etasizmi?")) return;
-  Store.reset();
-  data = Store.load();
+async function resetAll() {
+  if (!confirm("Barcha o'zgarishlar va mehmon tilaklari o'chadi. Davom etasizmi?")) return;
+  try {
+    await Store.reset();
+  } catch (err) {
+    handleRequestError(err, "Qayta tiklab bo'lmadi");
+    return;
+  }
+  data = await Store.load();
   buildForm();
   toast('Boshlang’ich holatga qaytarildi');
   refreshPreview();
@@ -293,6 +324,7 @@ function toast(message) {
 /* ---------- init ---------- */
 function init() {
   $('loginBtn').addEventListener('click', tryLogin);
+  $('loginEmail').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
   $('loginPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
   $('logoutBtn').addEventListener('click', logout);
   $('saveBtn').addEventListener('click', save);
@@ -301,11 +333,8 @@ function init() {
   $('copyRuLink').addEventListener('click', () => copyInviteLink('ru'));
   $('previewLang').addEventListener('change', refreshPreview);
 
-  let authed = false;
-  try { authed = sessionStorage.getItem(AUTH_KEY) === '1'; } catch (e) { /* noop */ }
-
-  if (authed) showAdmin();
-  else $('loginPass').focus();
+  if (Store.isAuthed()) showAdmin();
+  else $('loginEmail').focus();
 }
 
 init();
