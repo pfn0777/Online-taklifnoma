@@ -99,8 +99,8 @@ const DEFAULT_DATA = {
   telegram: 'chorlove_uz',
   instagram: 'chorlove.uz',
 
-  // ---- Musiqa (default o'chiq; avtoplay majburlanmaydi) ----
-  musicUrl: '',
+  // ---- Musiqa (konvert ochilganda boshlanadi) ----
+  musicUrl: 'musiqa.mp3',
 
   // ---- Ijtimoiy ulashish (Telegram preview) ----
   ogImage: '',
